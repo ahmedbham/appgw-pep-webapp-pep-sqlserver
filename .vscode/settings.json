@@ -1,0 +1,4 @@
+{
+    "appService.defaultWebAppToDeploy": "/subscriptions/0005c093-d9ad-44b4-abe8-f507848419ca/resourceGroups/lazard-broker-rg/providers/Microsoft.Web/sites/feweb-2tbdz5pyoidhe",
+    "appService.deploySubpath": "msdocs-app-service-sqldb-dotnetcore/DotNetCoreSqlDb/bin/Release/net6.0/publish"
+}
