@@ -26,7 +26,7 @@ var appGwFrontendIpConfigName = 'appGatewayPublicFrontendIpConfig'
 var appGwFrontendIpConfigId = resourceId('Microsoft.Network/applicationGateways/frontendIPConfigurations/', applicationGatewayName_var, appGwFrontendIpConfigName)
 var appGwHttpSettingName = 'appGatewayHttpSetting_80'
 var appGwHttpSettingId = resourceId('Microsoft.Network/applicationGateways/backendHttpSettingsCollection/', applicationGatewayName_var, appGwHttpSettingName)
-var appGwHttpSettingProbeName = 'appGatewayHttpSettingProbe_80'
+var appGwHttpSettingProbeName = 'appGatewayHttpSettingProbe_443'
 var appGwBackendAddressPoolName = 'appGatewayWebAppBackendPool'
 var appGwBackendAddressPoolId = resourceId('Microsoft.Network/applicationGateways/backendAddressPools/', applicationGatewayName_var, appGwBackendAddressPoolName)
 var appGwListenerName = 'appGatewayListener'
@@ -105,8 +105,8 @@ resource applicationGatewayName 'Microsoft.Network/applicationGateways@2020-05-0
       {
         name: appGwHttpSettingName
         properties: {
-          port: 80
-          protocol: 'Http'
+          port: 443
+          protocol: 'Https'
           cookieBasedAffinity: 'Disabled'
           requestTimeout: 20
           pickHostNameFromBackendAddress: true
