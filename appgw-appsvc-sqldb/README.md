@@ -10,8 +10,14 @@
 
 ## uploading private certificate to web apps
 
-* openssl req -new -x509 -key https.key -out https.cert -days 3650 -subj /CN="*.azurewebsites.net"
-* openssl pkcs12 -export -out myserver.pfx -inkey https.key -in https.cert
+* Generate certificate in .pfx format
+
+```bash
+openssl req -new -x509 -key https.key -out https.cert -days 3650 -subj /CN="*.azurewebsites.net"
+openssl pkcs12 -export -out myserver.pfx -inkey https.key -in https.cert
+```
+
+* When prompted, define an export password. You'll use this password when uploading your TLS/SSL certificate to App Service later.
 * on your web app page, select `TLS/SSL settings (preview)` blade
 * click `+ Add Certificate`
 * for `Source` select `Upload certificate (.pfx)`
