@@ -4,31 +4,16 @@
 
 * generate an ssh key
 * set up vars:
-  * virtualNetworkName=<vnet_created>
-  * subnetName=<appSubnet>
-* run the command: az deployment group create --template-file build-vm.bicep --parameters virtualNetworkName=$virtualNetworkName subnetName=$subnetName authenticationType=sshPublicKey 
-
-## uploading private certificate to web apps
-
-* Generate certificate in .pfx format
-
-```bash
-openssl req -new -x509 -key https.key -out https.cert -days 3650 -subj /CN="*.azurewebsites.net"
-openssl pkcs12 -export -out myserver.pfx -inkey https.key -in https.cert
-```
-
-* When prompted, define an export password. You'll use this password when uploading your TLS/SSL certificate to App Service later.
-* on your web app page, select `TLS/SSL settings (preview)` blade
-* click `+ Add Certificate`
-* for `Source` select `Upload certificate (.pfx)`
-* upload `myserver.pfx` created in previous step
+  * export virtualNetworkName=<vnet_created>
+  * export subnetName=<privateEndpointSubnet>
+* run the command: az deployment group create --template-file build-vm.bicep --parameters virtualNetworkName=$virtualNetworkName subnetName=$subnetName authenticationType=password 
 
 ## installing web app application and SQL DB schema
 
 * login to VM using bastion host
   * on Azure Portal, search for `virtual machines`
   * select the VM that was created earlier
-  * on the `bastion host blade` set `username` to `azureuser` and use `SSH Key from Local FIle` to log in
+  * on the `bastion host blade` use `Password` to log in
 * run the following commands:
 
 ```bash
@@ -52,10 +37,7 @@ git push azure main:master
 * We can retrieve the Connection String for our database using the az sql db show-connection-string command. This command allows us to add the Connection String to our App Service configuration settings. Copy this Connection String value for later use
 
 ```cli
-az sql db show-connection-string \
-    --client ado.net \
-    --name coreDb \
-    --server <your-server-name>
+az sql db show-connection-string --client ado.net --name coreDb --server <your-server-name>
 ```
 
 * Next, let's assign the Connection String to our App Service using the command below. MyDbConnection is the name of the Connection String in our appsettings.json file, which means it gets loaded by our app during startup.
@@ -63,10 +45,7 @@ az sql db show-connection-string \
 * **Replace the username and password** in the connection string with your own before running the command.
 
 ```bash
-az webapp config connection-string set \
-    -n <your-app-name> \
-    -t SQLServer \
-    --settings MyDbConnection=<your-connection-string>
+az webapp config connection-string set -n <your-app-name> --settings MyDbConnection=<your-connection-string>
 ```
 
 ```bash
@@ -77,14 +56,19 @@ cd DotNetCoreSqlDb
 * **Replace the server name, username and password placeholders** with the values you chose when creating your database.
 
 ```json
-"ConnectionStrings": {
-    "MyDbConnection": "Server=tcp:<server_name>.database.windows.net,1433;
-        Initial Catalog=coredb;
-        Persist Security Info=False;
-        User ID=<username>;Password=<password>;
-        Encrypt=True;
-        TrustServerCertificate=False;"
-  }
+"MyDbConnection": "Server=tcp:<server_name>.database.windows.net,1433;Initial Catalog=coreDb;Persist Security Info=False;User ID=<username>;Password=<password>;Encrypt=True;TrustServerCertificate=False;"
+```
+
+* install dotnet 6.0 SDK and runtime
+
+```bash
+wget https://packages.microsoft.com/config/ubuntu/18.04/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
+sudo dpkg -i packages-microsoft-prod.deb
+rm packages-microsoft-prod.deb
+sudo apt-get update
+sudo apt-get upgrade
+sudo apt-get install -y dotnet-sdk-6.0
+sudo apt-get install -y dotnet-runtime-6.0
 ```
 
 * run the following commands to install the necessary CLI tools for Entity Framework Core. 
@@ -95,5 +79,9 @@ dotnet tool install -g dotnet-ef \
 dotnet ef migrations add InitialCreate \
 dotnet ef database update
 ```
+
+## Test your web app access via Application Gateway
+
+* open a new browser window and enter Application Gateway URL 
 
 
