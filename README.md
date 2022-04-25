@@ -15,4 +15,4 @@
 * when deployment completes, get the output appGatewayUrl from the resulting json
 
 ## Next Steps
-* deploy a web application in one of the webapp which access SQL server data and shows it to the user
+* deploy a web application in one of the webapp which access SQL server data and shows it to the user by opening [README.md](appgw-appsvc-sqldb/README.md)
