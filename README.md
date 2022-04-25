@@ -7,9 +7,9 @@
 
 ## Instructions
 
-* login to Azure
-* create a resource group
-* set the resource group as a default: `az configure --edfaults group=<rg_name>`
+* login to Azure: `az login` or `az login --use-device-code`
+* create a resource group: `az group create --name <rg_name> --location <location>`
+* set the resource group as a default: `az configure --defaults group=<rg_name>`
 * run the command: `az deployment group create --template-file main.bicep --parameters sqlAdministratorLogin=<admin_name> `
   * when prompted, enter a password for SQL Server
 * when deployment completes, get the output appGatewayUrl from the resulting json

@@ -35,6 +35,7 @@ var appGwRoutingRuleName = 'appGatewayRoutingRule'
 var publicIpAddressName_var = 'myAppGatewayPublicIp-${uniqueString(resourceGroup().id)}'
 var publicIpAddressSku = 'Standard'
 var publicIpAddressAllocationType = 'Static'
+var domainNameLabel_var = '${appGatewayName}${uniqueString(resourceGroup().id)}'
 
 resource publicIpAddressName 'Microsoft.Network/publicIPAddresses@2020-05-01' = {
   name: publicIpAddressName_var
@@ -45,7 +46,7 @@ resource publicIpAddressName 'Microsoft.Network/publicIPAddresses@2020-05-01' = 
   properties: {
     publicIPAllocationMethod: publicIpAddressAllocationType
     dnsSettings: {
-      domainNameLabel: toLower('domainNameLabel1')
+      domainNameLabel: toLower(domainNameLabel_var)
     }
   }
 }
