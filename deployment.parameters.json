@@ -2,65 +2,11 @@
     "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "virtualNetworkName": {
-            "value": "spokevnet"
-        },
-        "virtualNetwork_CIDR": {
-            "value": "10.1.0.0/16"
-        },
-        "subnet1Name": {
-            "value": "AppGateway"
-        },
-        "subnet2Name": {
-            "value": "IntegrationSubnet"
-        },
-        "subnet3Name": {
-            "value": "WebSubnet"
-        },
-        "subnet4Name": {
-            "value": "GatewaySubnet"
-        },
-        "subnet1_CIDR" :{
-            "value": "10.1.3.0/24"
-        },
-        "subnet2_CIDR": {
-            "value": "10.1.2.0/24"
-        },
-        "subnet3_CIDR":{
-            "value": "10.1.1.0/24"
-        },
-        "subnet4_CIDR": {
-            "value": "10.1.0.0/24"
-        },
-        "sqlAdministratorLogin":{
-            "value": "mcadmin"
-        },
         "sqlAdministratorLoginPassword": {
-            "value": "Azur3K1ck3dM3!"
+            "value": ""
         },
-        "serverFarmName":{
-            "value": "mclazpoc2"
-        },
-        "site1_Name": {
-            "value": "mclazpoc2"
-        },
-        "site2_Name": {
-            "value": "mclazpoc22"
-        },
-        "skuName": {
-            "value": "P1v2"
-        },
-        "privateEndpointName1": {
-            "value": "mclazsqlpe"
-        },
-        "privateEndpointName2": {
-            "value": "mclazwape"
-        },
-        "privateEndpointName3": {
-            "value": "privateEndpoint3"
-        },
-        "appGatewayName": {
-            "value": "mclazpocag"
+        "sqlAdministratorLogin": {
+            "value": ""
         }
     }
 }
