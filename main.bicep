@@ -1,6 +1,22 @@
 @description('Location for all resources.')
 param location string = resourceGroup().location
 
+module hubVNetModule 'modules/hubvnet.bicep' = {
+  name: 'hubVNet'
+}
+
+module vNetPeerings 'modules/vnetPeers.bicep' = {
+  name: 'vnetPeers'
+  params: {
+    hubVNetName: hubVNetModule.outputs.virtualNetworkName
+    spokeVNetName: vnetModule.outputs.virtualNetworkName
+  }
+  dependsOn:[
+    vnetModule
+    hubVNetModule
+  ]
+}
+
 module vnetModule 'modules/vnet.bicep' = {
   name: 'myApp'
   params: {
@@ -34,7 +50,7 @@ module sqlServerServiceModule 'modules/sql-server.bicep' = {
   params: {
     location: location
     sqlAdministratorLogin: 'sqldbadmin'
-    sqlAdministratorLoginPassword: ''
+    sqlAdministratorLoginPassword: 'Azur3K1ck3dM3!'
     sqlServerPrivateEndpointName: 'sqlServerPrivateEndpoint'
     virtualNetworkName: vnetModule.outputs.virtualNetworkName
     virtualNetworkId: vnetModule.outputs.virtualNetworkId
