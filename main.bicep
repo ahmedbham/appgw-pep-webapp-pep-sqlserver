@@ -1,6 +1,13 @@
 @description('Location for all resources.')
 param location string = resourceGroup().location
 
+@description('The administrator username of the SQL logical server')
+param sqlAdministratorLogin string = 'sqlsvradmin'
+
+@description('The administrator password of the SQL logical server.')
+@secure()
+param sqlAdministratorLoginPassword string
+
 module vnetModule 'modules/vnet.bicep' = {
   name: 'myApp'
   params: {
@@ -33,8 +40,8 @@ module sqlServerServiceModule 'modules/sql-server.bicep' = {
   name: 'sqlServer'
   params: {
     location: location
-    sqlAdministratorLogin: 'sqldbadmin'
-    sqlAdministratorLoginPassword: ''
+    sqlAdministratorLogin: sqlAdministratorLogin
+    sqlAdministratorLoginPassword: sqlAdministratorLoginPassword
     sqlServerPrivateEndpointName: 'sqlServerPrivateEndpoint'
     virtualNetworkName: vnetModule.outputs.virtualNetworkName
     virtualNetworkId: vnetModule.outputs.virtualNetworkId
