@@ -8,8 +8,6 @@ param virtualNetworkName string
 
 param webAppHostName string
 
-param apiAppHostName string
-
 @description('Delegation Subnet Name')
 param appGatewaySubnet string
 
@@ -94,9 +92,6 @@ resource applicationGatewayName 'Microsoft.Network/applicationGateways@2020-05-0
           backendAddresses: [
             {
               fqdn: webAppHostName
-            }
-            {
-              fqdn: apiAppHostName
             }
           ]
         }
