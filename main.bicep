@@ -45,8 +45,8 @@ module appServiceModule 'modules/app-service.bicep' = {
     site2_Name: 'webapi-${uniqueString(resourceGroup().id)}'
     feAppPrivateEndpointName: 'feAppPrivateEndpoint'
     apiAppPrivateEndpointName: 'apiAppPrivateEndpoint'
-    virtualNetworkName: vnetModule.outputs.virtualNetworkName
-    virtualNetworkId: vnetModule.outputs.virtualNetworkId
+    hubVNetName: hubVNetModule.outputs.virtualNetworkName
+    spokeVNetName: vnetModule.outputs.virtualNetworkName
     delegationSubnet: vnetModule.outputs.subnet2Name
     privateEndpointSubnet: vnetModule.outputs.subnet3Name
   }
@@ -71,7 +71,6 @@ module appGatewayModule 'modules/app-gateway.bicep' = {
     location: location
     appGatewayName: 'myAppGateway'
     webAppHostName: appServiceModule.outputs.webAppHostName
-    apiAppHostName: appServiceModule.outputs.apiAppHostName
     virtualNetworkName: vnetModule.outputs.virtualNetworkName
     appGatewaySubnet: vnetModule.outputs.subnet4Name
   }
