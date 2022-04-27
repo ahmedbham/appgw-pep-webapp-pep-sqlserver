@@ -34,11 +34,19 @@ param skuSize string = 'P1v2'
 ])
 param skuFamily string = 'P1v2'
 
-@description('virtual network name')
-param virtualNetworkName string
+param hubVNetName string
 
-@description('virtual network id')
-param virtualNetworkId string
+param spokeVNetName string
+
+resource hubvnet 'Microsoft.Network/virtualNetworks@2021-05-01' existing = {
+  scope: resourceGroup()
+  name: hubVNetName
+}
+
+resource spokevnet 'Microsoft.Network/virtualNetworks@2021-05-01' existing = {
+  scope: resourceGroup()
+  name: spokeVNetName
+}
 
 @description('Delegation Subnet Name')
 param delegationSubnet string
@@ -139,7 +147,7 @@ resource webApp1NetworkConfig 'Microsoft.Web/sites/networkConfig@2020-06-01' = {
   parent: webApp1
   name: 'virtualNetwork'
   properties: {
-    subnetResourceId: resourceId('Microsoft.Network/virtualNetworks/subnets',virtualNetworkName ,delegationSubnet)
+    subnetResourceId: resourceId('Microsoft.Network/virtualNetworks/subnets',spokevnet.name,delegationSubnet)
   }
 }
 
@@ -147,7 +155,7 @@ resource webApp2NetworkConfig 'Microsoft.Web/sites/networkConfig@2020-06-01' = {
   parent: webApp2
   name: 'virtualNetwork'
   properties: {
-    subnetResourceId: resourceId('Microsoft.Network/virtualNetworks/subnets',virtualNetworkName ,delegationSubnet)
+    subnetResourceId: resourceId('Microsoft.Network/virtualNetworks/subnets',spokevnet.name ,delegationSubnet)
   }
 }
 
@@ -156,7 +164,7 @@ resource feAppPrivateEndpoint 'Microsoft.Network/privateEndpoints@2020-06-01' = 
   location: location
   properties: {
     subnet: {
-      id: resourceId('Microsoft.Network/virtualNetworks/subnets',virtualNetworkName ,privateEndpointSubnet)
+      id: resourceId('Microsoft.Network/virtualNetworks/subnets',spokevnet.name,privateEndpointSubnet)
     }
     privateLinkServiceConnections: [
       {
@@ -177,7 +185,7 @@ resource privateEndpoint2 'Microsoft.Network/privateEndpoints@2020-06-01' = {
   location: location
   properties: {
     subnet: {
-      id: resourceId('Microsoft.Network/virtualNetworks/subnets',virtualNetworkName ,privateEndpointSubnet)
+      id: resourceId('Microsoft.Network/virtualNetworks/subnets',spokevnet.name ,privateEndpointSubnet)
     }
     privateLinkServiceConnections: [
       {
@@ -198,14 +206,26 @@ resource privateDnsZonesSites 'Microsoft.Network/privateDnsZones@2018-09-01' = {
   location: 'global'
 }
 
-resource privateDnsZoneLinkSites 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2018-09-01' = {
+resource privateDnsZoneLinkSitesSpoke 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2018-09-01' = {
   parent: privateDnsZonesSites
-  name: '${privateDnsZonesSites.name}-link'
+  name: '${spokevnet.name}-link'
   location: 'global'
   properties: {
     registrationEnabled: false
     virtualNetwork: {
-      id: virtualNetworkId
+      id: spokevnet.id
+    }
+  }
+}
+
+resource privateDnsZoneLinkSitesHub 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2018-09-01' = {
+  parent: privateDnsZonesSites
+  name: '${hubvnet.name}-link'
+  location: 'global'
+  properties: {
+    registrationEnabled: false
+    virtualNetwork: {
+      id: hubvnet.id
     }
   }
 }
