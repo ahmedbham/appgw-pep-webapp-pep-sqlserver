@@ -34,10 +34,7 @@ param location string = resourceGroup().location
 param vmSize string = 'Standard_B2s'
 
 @description('Name of the VNET')
-param virtualNetworkName string = 'vNet'
-
-@description('Name of the subnet in the virtual network')
-param subnetName string = 'Subnet'
+param hubVnetName string = 'hubVnet'
 
 var publicIPAddressName = '${vmName}PublicIP'
 var networkInterfaceName = '${vmName}NetInt'
@@ -55,13 +52,13 @@ var linuxConfiguration = {
 }
 
 resource vnet 'Microsoft.Network/virtualNetworks@2021-05-01' existing = {
-  name: virtualNetworkName
+  name: hubVnetName
 }
 
-resource subnet 'Microsoft.Network/virtualNetworks/subnets@2021-05-01' existing = {
-  parent: vnet
-  name: subnetName
-}
+// resource subnet 'Microsoft.Network/virtualNetworks/subnets@2021-05-01' existing = {
+//   parent: vnet
+//   name: subnetName
+// }
 
 
 resource nic 'Microsoft.Network/networkInterfaces@2021-05-01' = {
@@ -72,9 +69,9 @@ resource nic 'Microsoft.Network/networkInterfaces@2021-05-01' = {
       {
         name: 'ipconfig1'
         properties: {
-          subnet: {
-            id: subnet.id
-          }
+        //   subnet: {
+        //     id: subnet.id
+        //   }
           privateIPAllocationMethod: 'Dynamic'
           publicIPAddress: {
             id: publicIP.id
