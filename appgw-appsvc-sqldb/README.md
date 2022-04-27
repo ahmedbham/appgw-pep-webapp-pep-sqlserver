@@ -2,11 +2,12 @@
 
 ## Creating VM
 
-* generate an ssh key
-* set up vars:
-  * export virtualNetworkName=<vnet_created>
-  * export subnetName=<privateEndpointSubnet>
-* run the command: az deployment group create --template-file build-vm.bicep --parameters virtualNetworkName=$virtualNetworkName subnetName=$subnetName authenticationType=password 
+* set up variable: `export hubVnetName=<hub-vnet_name>`
+* run the command:
+
+```bash
+az deployment group create --template-file build-vm.bicep --parameters virtualNetworkName=$hubVnetName authenticationType=password 
+```
 
 ## installing web app application and SQL DB schema
 
@@ -82,6 +83,4 @@ dotnet ef database update
 
 ## Test your web app access via Application Gateway
 
-* open a new browser window and enter Application Gateway URL 
-
-
+* open a new browser window and enter Application Gateway URL
