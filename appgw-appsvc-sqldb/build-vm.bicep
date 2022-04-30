@@ -24,8 +24,9 @@ param dnsLabelPrefix string = toLower('${vmName}-${uniqueString(resourceGroup().
   '14.04.5-LTS'
   '16.04.0-LTS'
   '18.04-LTS'
+  '20_04-lts-gen2'
 ])
-param ubuntuOSVersion string = '18.04-LTS'
+param ubuntuOSVersion string = '20_04-lts-gen2'
 
 @description('Location for all resources.')
 param location string = resourceGroup().location
@@ -34,7 +35,10 @@ param location string = resourceGroup().location
 param vmSize string = 'Standard_B2s'
 
 @description('Name of the VNET')
-param hubVnetName string = 'hubVnet'
+param hubVnetName string = 'hubVNet'
+param hubVnetId string = '/subscriptions/0005c093-d9ad-44b4-abe8-f507848419ca/resourceGroups/lazard-rg/providers/Microsoft.Network/virtualNetworks/HubVNet'
+param hubSunetName string = 'dnsSubnet'
+var subNetId = '${hubVnetId}/subnets/${hubSunetName}'
 
 var publicIPAddressName = '${vmName}PublicIP'
 var networkInterfaceName = '${vmName}NetInt'
@@ -55,6 +59,7 @@ resource vnet 'Microsoft.Network/virtualNetworks@2021-05-01' existing = {
   name: hubVnetName
 }
 
+
 // resource subnet 'Microsoft.Network/virtualNetworks/subnets@2021-05-01' existing = {
 //   parent: vnet
 //   name: subnetName
@@ -69,9 +74,9 @@ resource nic 'Microsoft.Network/networkInterfaces@2021-05-01' = {
       {
         name: 'ipconfig1'
         properties: {
-        //   subnet: {
-        //     id: subnet.id
-        //   }
+          subnet: {
+            id: subNetId
+          }
           privateIPAllocationMethod: 'Dynamic'
           publicIPAddress: {
             id: publicIP.id
@@ -113,7 +118,7 @@ resource vm 'Microsoft.Compute/virtualMachines@2021-11-01' = {
         }
       }
       imageReference: {
-        publisher: 'Canonical'
+        publisher: 'canonical'
         offer: '0001-com-ubuntu-server-focal'
         sku: ubuntuOSVersion
         version: 'latest'

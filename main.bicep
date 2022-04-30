@@ -59,8 +59,8 @@ module sqlServerServiceModule 'modules/sql-server.bicep' = {
     sqlAdministratorLogin: sqlAdministratorLogin
     sqlAdministratorLoginPassword: sqlAdministratorLoginPassword
     sqlServerPrivateEndpointName: 'sqlServerPrivateEndpoint'
-    virtualNetworkName: vnetModule.outputs.virtualNetworkName
-    virtualNetworkId: vnetModule.outputs.virtualNetworkId
+    hubVNetName: hubVNetModule.outputs.virtualNetworkName
+    spokeVNetName: vnetModule.outputs.virtualNetworkName
     privateEndpointSubnet: vnetModule.outputs.subnet3Name
   }
 }

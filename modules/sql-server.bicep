@@ -14,11 +14,19 @@ param sqlServerPrivateEndpointName string
 @description('Link name between your Private Endpoint and your Web App')
 param privateLinkConnectionName3 string = 'PrivateEndpointLink3'
 
-@description('virtual network name')
-param virtualNetworkName string
+param hubVNetName string
 
-@description('virtual network id')
-param virtualNetworkId string
+param spokeVNetName string
+
+resource hubvnet 'Microsoft.Network/virtualNetworks@2021-05-01' existing = {
+  scope: resourceGroup()
+  name: hubVNetName
+}
+
+resource spokevnet 'Microsoft.Network/virtualNetworks@2021-05-01' existing = {
+  scope: resourceGroup()
+  name: spokeVNetName
+}
 
 @description('Private Endpoint Subnet Name')
 param privateEndpointSubnet string
@@ -70,7 +78,7 @@ resource privateEndpoint3 'Microsoft.Network/privateEndpoints@2020-06-01' = {
   location: location
   properties: {
     subnet: {
-      id: resourceId('Microsoft.Network/virtualNetworks/subnets',virtualNetworkName , privateEndpointSubnet)
+      id: resourceId('Microsoft.Network/virtualNetworks/subnets', spokevnet.name , privateEndpointSubnet)
     }
     privateLinkServiceConnections: [
       {
@@ -91,14 +99,26 @@ resource privateDnsZonesSql 'Microsoft.Network/privateDnsZones@2018-09-01' = {
   location: 'global'
 }
 
-resource privateDnsZoneLinkSql 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2018-09-01' = {
+resource privateDnsZoneLinkSqlSpoke 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2018-09-01' = {
   parent: privateDnsZonesSql
-  name: '${privateDnsZonesSql.name}-link'
+  name: 'sql-${spokevnet.name}-link'
   location: 'global'
   properties: {
     registrationEnabled: false
     virtualNetwork: {
-      id: virtualNetworkId
+      id: spokevnet.id
+    }
+  }
+}
+
+resource privateDnsZoneLinkSqlHub 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2018-09-01' = {
+  parent: privateDnsZonesSql
+  name: 'sql-${hubvnet.name}-link'
+  location: 'global'
+  properties: {
+    registrationEnabled: false
+    virtualNetwork: {
+      id: hubvnet.id
     }
   }
 }
