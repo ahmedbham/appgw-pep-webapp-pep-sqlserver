@@ -20,5 +20,5 @@ jobs:
         subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION }}
         resourceGroupName: ${{ secrets.AZURE_RG }}
         template: ./main.bicep
-        parameters: sqlAdministratorLogin=${{secrets.SQL_ADMIN_LOGIN_NAME}} sqlAdministratorLoginPassword=${{ secrets.SQL_ADMIN_LOGIN_PASSWORD }}
+        parameters: sqlAdministratorLogin=${{secrets.SQL_DB_ADMIN_NAME}} sqlAdministratorLoginPassword=${{ secrets.SQL_DB_ADMIN_PASSWORD }}
         failOnStdErr: false
