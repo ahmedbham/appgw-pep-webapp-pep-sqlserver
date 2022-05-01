@@ -33,7 +33,7 @@ jobs:
 
         git_remote=$(git remote show | grep "azure")
         echo "git remote $git_remote"
-        if [ -n "$git_remote" ]; then
+        if [ -z "$git_remote" ]; then
           echo "git remote add azure"
           git remote add azure $remote_url_final
         fi;  
