@@ -1,7 +1,6 @@
 on: [workflow_dispatch]
 name: Azure ARM
 env:
-  RESOURCE_GROUP_NAME: lazard-rg
   APP_NAME: feweb-7cu6grksc6oi6
   DB_NAME: coreDb
   SERVER_NAME: sqlserver7cu6grksc6oi6
@@ -19,7 +18,7 @@ jobs:
 
     - name: install app and db schema
       run: |
-        az configure --defaults group={{env.RESOURCE_GROUP_NAME}}
+        az configure --defaults group={{ secrets.AZURE_RG }}
 
         cd msdocs-app-service-sqldb-dotnetcore
   
