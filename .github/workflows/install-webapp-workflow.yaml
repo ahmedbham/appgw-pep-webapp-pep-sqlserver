@@ -41,12 +41,15 @@ jobs:
         echo "git push azure"
         git push azure main:master
 
-        connection_string=$(az sql db show-connection-string --client ado.net --name {{env.DB_NAME}} --server {{env.SERVER_NAME}})
-        re_connection_string=$(echo $connection_string | sed -e 's/<username>/${{secrets.SQL_DB_ADMIN_NAME}}/' -e 's/<password>/${{secrets.SQL_DB_PASSWORD}}/')
-        az webapp config connection-string set --connection-string-type SQLServer -n {{env.APP_NAME}} --settings MyDbConnection="$re_connection_string"
+        echo "env DB_NAME ${{ env.DB_NAME }} ${{env.DB_NAME}}"
+        echo "server name ${{ env.SERVER_NAME }} "
+
+        connection_string=$(az sql db show-connection-string --client ado.net --name {{ env.DB_NAME }} --server {{ env.SERVER_NAME }})
+        re_connection_string=$(echo $connection_string | sed -e 's/<username>/${{ secrets.SQL_DB_ADMIN_NAME }}/' -e 's/<password>/${{ secrets.SQL_DB_PASSWORD }}/')
+        az webapp config connection-string set --connection-string-type SQLServer -n {{ env.APP_NAME }} --settings MyDbConnection="$re_connection_string"
         
         cd DotNetCoreSqlDb
-        MyDbConnection='Server=tcp:{{env.SERVER_NAME}}.database.windows.net,1433;Initial Catalog=coreDb;Persist Security Info=False;User ID=${{secrets.SQL_DB_ADMIN_NAME}};Password=${{secrets.SQL_DB_PASSWORD}};Encrypt=True;TrustServerCertificate=False;'
+        MyDbConnection='Server=tcp:{{ env.SERVER_NAME }}.database.windows.net,1433;Initial Catalog=coreDb;Persist Security Info=False;User ID=${{ secrets.SQL_DB_ADMIN_NAME }};Password=${{ secrets.SQL_DB_PASSWORD }};Encrypt=True;TrustServerCertificate=False;'
         tmp=$(mktemp)
         jq --arg a "$MyDbConnection" '.ConnectionStrings.MyDbConnection = $a' appsettings.json > "$tmp" && mv "$tmp" appsettings.json
 
