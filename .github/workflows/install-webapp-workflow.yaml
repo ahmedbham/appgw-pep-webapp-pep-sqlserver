@@ -1,5 +1,5 @@
 on: [workflow_dispatch]
-name: Azure ARM
+name: web app deployment
 env:
   APP_NAME: feweb-7cu6grksc6oi6
   DB_NAME: coreDb
