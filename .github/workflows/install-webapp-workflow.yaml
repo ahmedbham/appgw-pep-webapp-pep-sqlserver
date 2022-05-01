@@ -53,5 +53,5 @@ jobs:
         tmp=$(mktemp)
         jq --arg a "$MyDbConnection" '.ConnectionStrings.MyDbConnection = $a' appsettings.json > "$tmp" && mv "$tmp" appsettings.json
 
-        dotnet ef migrations add InitialCreate2
+        dotnet ef migrations add InitialCreate3
         dotnet ef database update
