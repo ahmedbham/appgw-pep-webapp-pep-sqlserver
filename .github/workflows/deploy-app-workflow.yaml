@@ -1,4 +1,7 @@
-on: [workflow_dispatch]
+on: 
+  push:
+    paths:
+    - '**.bicep'
 name: Infra deployment bicep
 jobs:
   build-and-deploy:
